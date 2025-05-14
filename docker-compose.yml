@@ -1,0 +1,27 @@
+# Strongly inspired by: https://dockerswarm.rocks/traefik/
+services:
+  traefik:
+    image: traefik:v3.4
+    restart: always
+    env_file: .env
+    environment:
+      - TRAEFIK_CERTIFICATESRESOLVERS_LE_ACME_EMAIL=${ACME_EMAIL}
+    ports:
+      - 80:80
+      - 443:443
+      #- 8080:8080 # Uncomment to expose the Traefik dashboard
+      # Additionally enable dashboard in traefik.yml
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik-public-certificates:/certificates
+      - ./traefik.yml:/etc/traefik/traefik.yml:ro
+    networks:
+      - traefik-public
+
+volumes:
+  traefik-public-certificates:
+
+
+networks:
+  traefik-public:
+    external: true

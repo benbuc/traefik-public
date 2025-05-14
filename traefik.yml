@@ -1,0 +1,36 @@
+entryPoints:
+  http:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: https
+          permanent: true
+  https:
+    address: ":443"
+    asDefault: true
+
+providers:
+  docker:
+    exposedByDefault: false
+    constraints: "Label(`traefik.constraint-label`, `traefik-public`)"
+
+certificatesResolvers:
+  le:
+    acme:
+      # email is set from environment variable
+      storage: "/certificates/acme.json"
+      tlsChallenge: {}
+
+log:
+  level: ERROR
+
+# Uncomment to enable the Traefik dashboard
+# Caution as this is insecure. Only use for debugging!
+# Take a look at the Traefik documentation for more information
+# as this can also be enabled with a nice URL and BasicAuth.
+#api:
+  #dashboard: true
+  #insecure: true
+
+accessLog: {}
