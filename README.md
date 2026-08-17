@@ -53,3 +53,28 @@ networks:
     traefik-public:
         external: true
 ```
+
+## Monitoring (optional)
+
+`docker-compose.monitoring.yml` is an optional mixin that adds Prometheus + Grafana,
+pre-wired with a dashboard for Traefik's own metrics. Since Traefik exposes per-router
+and per-service metrics for everything it proxies, this dashboard gives you visibility
+into every connected app's traffic (request rate, latency, response codes) without any
+changes to those apps' own configuration.
+
+Traefik's metrics are served on an internal-only entrypoint (`:8082`, not published to
+the host), reachable only from other containers on the `traefik-public` network.
+
+- Add the Grafana settings to your `.env` (see `.env.example`):
+    ```
+    GRAFANA_DOMAIN=grafana.example.com
+    GRAFANA_ADMIN_USER=admin
+    GRAFANA_ADMIN_PASSWORD=changeme
+    ```
+- Start Traefik together with the monitoring stack:
+    ```bash
+    docker compose -f docker-compose.yml -f docker-compose.monitoring.yml up -d
+    ```
+- Open `https://<GRAFANA_DOMAIN>` and log in with the credentials above. The
+  "Traefik Official Standalone Dashboard" is provisioned automatically — no manual
+  datasource or dashboard import needed.

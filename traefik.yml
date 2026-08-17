@@ -9,6 +9,8 @@ entryPoints:
   https:
     address: ":443"
     asDefault: true
+  metrics:
+    address: ":8082"
 
 providers:
   docker:
@@ -24,6 +26,13 @@ certificatesResolvers:
       # email is set from environment variable
       storage: "/certificates/acme.json"
       tlsChallenge: {}
+
+metrics:
+  prometheus:
+    entryPoint: metrics
+    addEntryPointsLabels: true
+    addRoutersLabels: true
+    addServicesLabels: true
 
 log:
   level: ERROR
